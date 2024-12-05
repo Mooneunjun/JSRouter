@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vanilla JS Router Example</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f4f4f4;
+      }
+      nav {
+        background-color: #333;
+        color: #fff;
+        padding: 10px 20px;
+      }
+      nav a {
+        color: #fff;
+        text-decoration: none;
+        margin-right: 10px;
+      }
+      nav a:hover {
+        text-decoration: underline;
+      }
+      #app {
+        margin-top: 20px;
+        padding: 20px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="/" data-link>Home</a>
+      <a href="/about" data-link>About</a>
+      <a href="/contact" data-link>Contact</a>
+    </nav>
+    <div id="app"></div>
+
+    <script>
+      // 각 경로에 대한 컨텐츠
+      const routes = {
+        "/": `
+                <h1>Home Page</h1>
+                <p>Welcome to the Home Page!</p>
+                <p>This is the main landing page of our website.</p>
+            `,
+        "/about": `
+                <h1>About Page</h1>
+                <p>This is the About Page. Learn more about us here.</p>
+                <p>Our company was founded in 2020 with the mission to provide the best services.</p>
+            `,
+        "/contact": `
+                <h1>Contact Page</h1>
+                <p>Feel free to Contact Us.</p>
+                <p>Email: example@example.com</p>
+                <p>Phone: (123) 456-7890</p>
+            `,
+      };
+
+      // 현재 경로에 따라 콘텐츠 렌더링
+      const render = () => {
+        const app = document.getElementById("app");
+        const currentPath = window.location.pathname;
+        app.innerHTML =
+          routes[currentPath] ||
+          "<h1>404 - Page not found</h1><p>The page you are looking for does not exist.</p>";
+      };
+
+      // 네비게이션 동작 (새로고침 방지)
+      const navigate = (event) => {
+        event.preventDefault();
+        const target = event.target.closest("a[data-link]");
+        if (target) {
+          const path = target.getAttribute("href");
+          window.history.pushState({}, "", path);
+          render();
+        }
+      };
+
+      // 브라우저 뒤로가기/앞으로가기 버튼 대응
+      window.addEventListener("popstate", render);
+
+      // 초기 로드 및 이벤트 연결
+      document.addEventListener("DOMContentLoaded", () => {
+        document.body.addEventListener("click", navigate);
+        render();
+      });
+    </script>
+  </body>
+</html>
